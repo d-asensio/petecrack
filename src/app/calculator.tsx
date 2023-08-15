@@ -9,7 +9,7 @@ export function Calculator() {
 
   return (
   <main className="flex flex-col sm:flex-row min-h-screenitems-center justify-center h-screen">
-    <div className="flex items-center p-12 w-1/2">
+    <div className="flex items-center p-12 sm:w-1/2 m:w-2/3">
       <DiveForm onSacRateChange={setSacRate}/>
     </div>
     <div className="bg-blue-300 overflow-auto margin-auto py-6 px-10 space-y-4 sm:w-1/2 m:w-1/3">

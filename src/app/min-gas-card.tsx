@@ -31,7 +31,7 @@ export function MinGasCard({sacRate}: { sacRate: number }) {
           </div>
           {[20, 24, 30].map(cylinderVolume => (
             <div key={cylinderVolume} className='bg-background flex items-center justify-center'>
-                <span className='text-3xl'>
+                <span className='text-2xl'>
                   {Math.round(petecrackFormula({depth, sacRate}) / cylinderVolume)}bar
                 </span>
             </div>
