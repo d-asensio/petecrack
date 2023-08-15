@@ -3,7 +3,7 @@ import { AspectRatio } from "@/components/ui/aspect-ratio"
 
 function segmentFormula ({ depth, sacRate, cylinderVolume }: { depth: number, sacRate: number, cylinderVolume: number }) {
   const Pamb = depth/10 + 1
-  const CatDepth = sacRate/cylinderVolume*Pamb
+  const CatDepth = sacRate/cylinderVolume*Pamb*5
 
   return Math.round((CatDepth + Number.EPSILON) * 10) / 10
 }
