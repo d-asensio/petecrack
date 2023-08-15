@@ -14,9 +14,9 @@ export function Calculator() {
     </div>
     <div className="bg-blue-300 overflow-auto margin-auto py-6 px-10 space-y-4 sm:w-1/2 m:w-1/3">
       <h2 className='text-3xl text-accent font-bold'>Min Gas</h2>
-      <SegmentsCard sacRate={sacRate}/>
-      <h2 className='text-3xl text-accent font-bold'>Segments</h2>
       <MinGasCard sacRate={sacRate}/>
+      <h2 className='text-3xl text-accent font-bold'>Segments</h2>
+      <SegmentsCard sacRate={sacRate}/>
     </div>
   </main>
   )
