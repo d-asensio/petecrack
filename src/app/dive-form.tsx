@@ -47,17 +47,49 @@ export function DiveForm() {
   function onSubmit(data: z.infer<typeof FormSchema>) {
     const {depth, sac_rate} = deserializeFormData(data)
 
+    // P = pressure (avg) = (P0 + P1)/2
+    // t = time to surface (depth / 3m/min) + 2min troubleshooting
+    // C = consumption (20l/min)
+
+    const P0 = depth/10 + 1
+    const P1 = 1
+    const Pavg = (P0 + P1)/2
+
+    const tts = depth/3 + 2
+
+    const minGas = Pavg * tts * sac_rate * 2
+
     toast({
       title: "You submitted the following values:",
       description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">
-            {depth * 2}
-          </code>
-          <code className="text-white">
-            {sac_rate}
-          </code>
-        </pre>
+        <ul className="mt-2 w-full rounded-md bg-slate-950 p-4 text-blue-200 space-y-2">
+          <li>
+            Depth: <strong>{depth} m</strong>:
+          </li>
+          <li>
+            S.A.C. Rate: <strong>{sac_rate} liters/min</strong>:
+          </li>
+          <h4 className='text-xl'>Pressure:</h4>
+          <li>
+            P0: <strong>{P0} bar</strong>:
+          </li>
+          <li>
+            P1: <strong>{P1} bar (sea surface)</strong>:
+          </li>
+          <li>
+            P avg.: <strong>{Pavg} bar</strong>:
+          </li>
+
+          <h4 className='text-xl'>Time:</h4>
+          <li>
+            TTS (time to surface): <strong>{tts} minutes</strong>:
+          </li>
+
+          <h4 className='text-xl'>Gas:</h4>
+          <li>
+            Min Gas: <strong>{minGas} liters</strong>:
+          </li>
+        </ul>
       ),
     })
   }
