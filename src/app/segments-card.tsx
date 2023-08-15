@@ -20,7 +20,7 @@ export function SegmentsCard({sacRate}: { sacRate: number }) {
         </div>
       ))}
       {[10, 20, 30, 40].map(depth => (
-        <>
+        <React.Fragment key={depth}>
           <div className='bg-background flex items-center justify-center'>
                 <span className='text-3xl'>
                   {depth}m
@@ -33,7 +33,7 @@ export function SegmentsCard({sacRate}: { sacRate: number }) {
                 </span>
             </div>
           ))}
-        </>
+        </React.Fragment>
       ))}
     </AspectRatio>)
 }
