@@ -18,10 +18,6 @@ import {Input} from "@/components/ui/input"
 import {toast} from "@/components/ui/use-toast"
 
 const FormSchema = z.object({
-  depth: z
-    .string({
-      required_error: "Depth is required"
-    }),
   sac_rate: z
     .string({
       required_error: "S.A.C Rate is required",
@@ -30,7 +26,6 @@ const FormSchema = z.object({
 
 function deserializeFormData(data: z.infer<typeof FormSchema>) {
   return {
-    depth: parseFloat(data.depth),
     sac_rate: parseFloat(data.sac_rate)
   }
 }
