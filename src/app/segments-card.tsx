@@ -27,7 +27,7 @@ export function SegmentsCard({sacRate}: { sacRate: number }) {
                 </span>
           </div>
           {[20, 24, 30].map(cylinderVolume => (
-            <div className='bg-background flex items-center justify-center'>
+            <div key={cylinderVolume} className='bg-background flex items-center justify-center'>
                 <span className='text-3xl'>
                   {segmentFormula({depth, sacRate, cylinderVolume})}bar
                 </span>
