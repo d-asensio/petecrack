@@ -1,5 +1,6 @@
 import * as React from "react";
 import {AspectRatio} from "@/components/ui/aspect-ratio";
+import {cn} from "@/lib/utils";
 
 function petecrackFormula ({ depth, sacRate }: { depth: number, sacRate: number }) {
   const P0 = depth/10 + 1
@@ -11,14 +12,21 @@ function petecrackFormula ({ depth, sacRate }: { depth: number, sacRate: number 
   return Pavg * tts * sacRate * 2
 }
 
-export function MinGasCard({sacRate}: { sacRate: number }) {
+export function MinGasCard({cylinders, sacRate}: { sacRate: number, cylinders: { name: string, volume: number }[]}) {
   return (
-    <AspectRatio ratio={1 / 1.6} className='grid grid-cols-4 rounded-2xl bg-black gap-0.5 overflow-hidden shadow'>
+    <AspectRatio
+      ratio={1 / 1.6}
+      className={cn(
+        'grid rounded-2xl bg-black gap-0.5 overflow-hidden shadow',
+        cylinders.length === 3 && 'grid-cols-4',
+        cylinders.length === 4 && 'grid-cols-5'
+      )}
+    >
       <div className='bg-background'/>
-      {['2x10', '2x12', '2x15'].map(cylinderVolume => (
-        <div key={cylinderVolume} className='bg-background flex items-center justify-center'>
+      {cylinders.map(({name}) => (
+        <div key={name} className='bg-background flex items-center justify-center'>
               <span className='text-3xl'>
-                {cylinderVolume}l
+                {name}l
               </span>
         </div>
       ))}
@@ -29,10 +37,10 @@ export function MinGasCard({sacRate}: { sacRate: number }) {
                   {depth}m
                 </span>
           </div>
-          {[20, 24, 30].map(cylinderVolume => (
-            <div key={cylinderVolume} className='bg-background flex items-center justify-center'>
+          {cylinders.map(({volume}) => (
+            <div key={volume} className='bg-background flex items-center justify-center'>
                 <span className='text-2xl'>
-                  {Math.round(petecrackFormula({depth, sacRate}) / cylinderVolume)}bar
+                  {Math.round(petecrackFormula({depth, sacRate}) / volume)}bar
                 </span>
             </div>
           ))}
