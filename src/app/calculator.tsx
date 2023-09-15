@@ -1,10 +1,11 @@
 "use client"
-import {DiveForm} from "@/app/dive-form";
-import {MinGasCard} from "@/app/min-gas-card";
 import * as React from "react";
-import {SegmentsCard} from "@/app/segments-card";
 
-const singleCylinders = [
+import {DiveForm} from "@/app/dive-form";
+import {MinGasTable} from "@/app/min-gas-table";
+import {SegmentsTable} from "@/app/segments-table";
+
+const cylinders = [
   {
     name: '10',
     volume: 10
@@ -20,10 +21,7 @@ const singleCylinders = [
   {
     name: '18',
     volume: 18
-  }
-]
-
-const doubleCylinders = [
+  },
   {
     name: '2x10',
     volume: 20
@@ -35,6 +33,10 @@ const doubleCylinders = [
   {
     name: '2x15',
     volume: 30
+  },
+  {
+    name: '2x18',
+    volume: 36
   }
 ]
 
@@ -42,19 +44,24 @@ export function Calculator() {
   const [sacRate, setSacRate] = React.useState(20)
 
   return (
-  <main className="flex flex-col sm:flex-row min-h-screenitems-center justify-center h-screen">
-    <div className="flex items-center p-12 sm:w-1/2 m:w-2/3">
-      <DiveForm onSacRateChange={setSacRate}/>
+  <main className="flex flex-col items-center">
+    <div className="border-b w-full">
+      <div className="flex items-center p-4">
+        <DiveForm onSacRateChange={setSacRate}/>
+      </div>
     </div>
-    <div className="bg-blue-300 overflow-auto margin-auto py-6 px-10 space-y-4 sm:w-1/2 m:w-1/3">
-      <h2 className='text-3xl text-accent font-bold'>Min Gas (single tank)</h2>
-      <MinGasCard cylinders={singleCylinders} sacRate={sacRate}/>
-      <h2 className='text-3xl text-accent font-bold'>Min Gas (doubles)</h2>
-      <MinGasCard cylinders={doubleCylinders} sacRate={sacRate}/>
-      <h2 className='text-3xl text-accent font-bold'>Segments (single tank)</h2>
-      <SegmentsCard cylinders={singleCylinders} sacRate={sacRate}/>
-      <h2 className='text-3xl text-accent font-bold'>Segments (doubles)</h2>
-      <SegmentsCard cylinders={doubleCylinders} sacRate={sacRate}/>
+    <div className="py-6 px-10 space-y-4 w-full max-w-6xl">
+      <h2 className='text-3xl font-bold'>Min Gas</h2>
+      <MinGasTable
+        cylinders={cylinders}
+        sacRate={sacRate}
+      />
+
+      <h2 className='text-3xl font-bold'>Segments</h2>
+      <SegmentsTable
+        cylinders={cylinders}
+        sacRate={sacRate}
+      />
     </div>
   </main>
   )
