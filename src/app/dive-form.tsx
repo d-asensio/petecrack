@@ -40,9 +40,7 @@ export function DiveForm({ onSacRateChange }: {onSacRateChange: (sac_rate: numbe
 
   return (
     <Form {...form}>
-      <form
-        className="w-full space-y-4"
-      >
+      <form className="w-full space-y-4">
         <FormField
           control={form.control}
           name="sac_rate"
