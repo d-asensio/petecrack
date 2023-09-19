@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
-import {equivalentNarcoticDepth, maximumOperatingDepth} from "@/lib/dive-formulas";
+import {equivalentNarcoticDepth, idealGasMixForDepth} from "@/lib/dive-formulas";
 
 interface GasCharacteristicsTable {
   gasFractions: {
@@ -19,6 +19,9 @@ export function GasCharacteristicsTable({ gasFractions }: GasCharacteristicsTabl
           <TableHead>
             Equivalent narcotic depth (END)
           </TableHead>
+          <TableHead>
+            Ideal gas
+          </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -27,6 +30,9 @@ export function GasCharacteristicsTable({ gasFractions }: GasCharacteristicsTabl
             <TableCell>{depth}m</TableCell>
             <TableCell >
               {Math.trunc(equivalentNarcoticDepth(gasFractions, depth))}m
+            </TableCell>
+            <TableCell >
+              {idealGasMixForDepth(depth)}
             </TableCell>
           </TableRow>
         ))}

@@ -10,6 +10,11 @@ const partialPressureAtAmbientPressure =
 const ambientPressureOfFractionPartialPressure =
   (ppGas: number, fGas: number) =>
     ppGas / fGas
+
+const gasFractionOfGasPartialPressureArAmbientPressure =
+  (ambientPressure: number, ppGas: number) =>
+    ppGas / ambientPressure
+
 export const equivalentNarcoticDepth = ({fHe, fO2}: { fHe: number, fO2: number }, depth: number) => {
   const fN2 = 1 - fHe - fO2
 
@@ -24,4 +29,22 @@ export const equivalentNarcoticDepth = ({fHe, fO2}: { fHe: number, fO2: number }
 export const maximumOperatingDepth = ({fO2}: { fO2: number }) => {
   const maxAmbientPressure = ambientPressureOfFractionPartialPressure(1.6, fO2)
   return fromAmbientPressureToDepth(maxAmbientPressure)
+}
+
+// https://www.tdisdi.com/tdi-diver-news/calculating-gas-mixes/
+export const idealGasMixForDepth = (depth: number) => {
+  const acceptableN2pp = partialPressureAtAmbientPressure(
+    0.79,
+    fromDepthToAmbientPressure(30)
+  )
+  const acceptableO2pp = 1.4
+  const acceptableNarcoticGaspp = acceptableN2pp + acceptableO2pp
+
+  const ambientPressure = fromDepthToAmbientPressure(depth)
+
+  const vacantHepp = ambientPressure - acceptableNarcoticGaspp
+
+  if (vacantHepp <= 0) return "-"
+
+  return `${Math.trunc(gasFractionOfGasPartialPressureArAmbientPressure(ambientPressure, vacantHepp) * 100)}% He - ${Math.trunc(gasFractionOfGasPartialPressureArAmbientPressure(ambientPressure, acceptableN2pp) * 100)}% N2 - ${Math.trunc(gasFractionOfGasPartialPressureArAmbientPressure(ambientPressure, acceptableO2pp) * 100)}% O2`
 }
