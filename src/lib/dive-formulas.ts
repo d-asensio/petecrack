@@ -46,5 +46,9 @@ export const idealGasMixForDepth = (depth: number) => {
 
   if (vacantHepp <= 0) return "-"
 
-  return `${Math.round(gasFractionOfGasPartialPressureArAmbientPressure(ambientPressure, vacantHepp) * 100)}% He - ${Math.round(gasFractionOfGasPartialPressureArAmbientPressure(ambientPressure, acceptableN2pp) * 100)}% N2 - ${Math.round(gasFractionOfGasPartialPressureArAmbientPressure(ambientPressure, acceptableO2pp) * 100)}% O2`
+  const fracHe = gasFractionOfGasPartialPressureArAmbientPressure(ambientPressure, vacantHepp)
+  const fracN2 = gasFractionOfGasPartialPressureArAmbientPressure(ambientPressure, acceptableN2pp)
+  const fracO2 = gasFractionOfGasPartialPressureArAmbientPressure(ambientPressure, acceptableO2pp)
+
+  return `${Math.round(fracHe * 100)}% He - ${Math.round(fracN2 * 100)}% N2 - ${Math.round(fracO2 * 100)}% O2 (${fracO2 >= .18 ? 'normoxic' : 'hipoxic'})`
 }
