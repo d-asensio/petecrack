@@ -47,7 +47,7 @@ export function DiveForm({ onSacRateChange }: {onSacRateChange: (sac_rate: numbe
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="items-center space-y-6"
+        className="w-full space-y-4"
       >
         <FormField
           control={form.control}

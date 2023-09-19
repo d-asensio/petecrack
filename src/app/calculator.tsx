@@ -1,9 +1,17 @@
 "use client"
+
 import * as React from "react";
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
+import { Label } from "@/components/ui/label"
+import { Slider } from "@/components/ui/slider"
 
 import {DiveForm} from "@/app/dive-form";
 import {MinGasTable} from "@/app/min-gas-table";
 import {SegmentsTable} from "@/app/segments-table";
+import {Input} from "@/components/ui/input";
+import {GasCharacteristicsTable} from "@/app/gas-characteristics-table";
 
 const cylinders = [
   {
@@ -40,29 +48,135 @@ const cylinders = [
   }
 ]
 
-export function Calculator() {
+const fromDepthToAmbientPressure =
+  (depth: number) =>
+    depth/10 + 1
+
+const fromAmbientPressureToDepth =
+  (ambientPressure: number) =>
+    (ambientPressure - 1)*10
+
+const partialPressureAtAmbientPressure =
+  (fGas: number, ambientPressure: number) =>
+    ambientPressure * fGas
+
+const ambientPressureOfFractionPartialPressure =
+  (ppGas: number, fGas: number) =>
+    ppGas/fGas
+
+const equivalentNarcoticDepth = ({fHe, fO2}: {fHe: number, fO2: number}, depth: number) => {
+  const fN2 = 1 - fHe - fO2
+
+  const ambientPressure = fromDepthToAmbientPressure(depth)
+
+  const ppAir = partialPressureAtAmbientPressure(fN2 + fO2, ambientPressure)
+
+  const eqAmbientPressure=  ambientPressureOfFractionPartialPressure(ppAir, 1)
+
+  return fromAmbientPressureToDepth(eqAmbientPressure)
+}
+
+function GasConsumptionCalculator() {
   const [sacRate, setSacRate] = React.useState(20)
 
   return (
-  <main className="flex flex-col items-center">
-    <div className="border-b w-full">
-      <div className="flex items-center p-4">
-        <DiveForm onSacRateChange={setSacRate}/>
+    <div className="flex items-stretch">
+      <div className="border-r min-w-[250px]">
+        <div className="flex items-center p-4">
+          <DiveForm onSacRateChange={setSacRate}/>
+        </div>
+      </div>
+      <div className="py-6 px-10 space-y-4 w-full max-w-6xl overflow-scroll">
+        <h2 className="text-3xl font-bold">Min Gas</h2>
+        <MinGasTable
+          cylinders={cylinders}
+          sacRate={sacRate}
+        />
+
+        <h2 className="text-3xl font-bold">Segments</h2>
+        <SegmentsTable
+          cylinders={cylinders}
+          sacRate={sacRate}
+        />
       </div>
     </div>
-    <div className="py-6 px-10 space-y-4 w-full max-w-6xl">
-      <h2 className='text-3xl font-bold'>Min Gas</h2>
-      <MinGasTable
-        cylinders={cylinders}
-        sacRate={sacRate}
-      />
+  )
+}
 
-      <h2 className='text-3xl font-bold'>Segments</h2>
-      <SegmentsTable
-        cylinders={cylinders}
-        sacRate={sacRate}
-      />
+function GasMixCalculator() {
+  const [gasMix, setGasMix] = React.useState([15, 100 - 21])
+  const [fHe, fO2i] = gasMix
+  const fO2 = 100 - fO2i
+  const fN2 = 100 - fO2 - fHe
+
+  return (
+    <div className="flex items-stretch">
+      <div className="border-r min-w-[250px]">
+        <div className="p-4 space-y-6">
+          <Slider
+            value={gasMix}
+            onValueChange={setGasMix}
+            max={100}
+            step={1}
+          />
+          <div className="space-y-2">
+            <div className="grid w-full max-w-sm items-center gap-2">
+              <Label htmlFor="he">He</Label>
+              <Input
+                type="text"
+                id="he"
+                value={`${fHe}%`}
+                readOnly
+              />
+            </div>
+            <div className="grid w-full max-w-sm items-center gap-2">
+              <Label htmlFor="N2">N2</Label>
+              <Input
+                type="text"
+                id="n2"
+                value={`${fN2}%`}
+                readOnly
+              />
+            </div>
+            <div className="grid w-full max-w-sm items-center gap-2">
+              <Label htmlFor="02">02</Label>
+              <Input
+                type="text"
+                id="o2"
+                value={`${fO2}%`}
+                readOnly
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="py-6 px-10 space-y-4 w-full max-w-6xl overflow-scroll">
+        <GasCharacteristicsTable
+          gasFractions={{
+            fHe: fHe/100,
+            fO2: fO2/100
+          }}
+        />
+      </div>
     </div>
-  </main>
+  )
+}
+
+export function Calculator() {
+  return (
+    <Tabs defaultValue="gas-consumption" className="h-screen">
+      <div className="flex justify-center border-b p-4">
+        <TabsList>
+          <TabsTrigger value="gas-consumption">Gas Consumption</TabsTrigger>
+          <TabsTrigger value="gas-mix">Gas Mix</TabsTrigger>
+        </TabsList>
+      </div>
+      <TabsContent value="gas-consumption">
+        <GasConsumptionCalculator />
+      </TabsContent>
+      <TabsContent value="gas-mix">
+        <GasMixCalculator />
+      </TabsContent>
+    </Tabs>
   )
 }
