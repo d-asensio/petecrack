@@ -12,6 +12,7 @@ import {MinGasTable} from "@/app/min-gas-table";
 import {SegmentsTable} from "@/app/segments-table";
 import {Input} from "@/components/ui/input";
 import {GasCharacteristicsTable} from "@/app/gas-characteristics-table";
+import {maximumOperatingDepth} from "@/lib/dive-formulas";
 
 const cylinders = [
   {
@@ -81,6 +82,12 @@ function GasMixCalculator() {
   const fO2 = 100 - fO2i
   const fN2 = 100 - fO2 - fHe
 
+
+  const gasFractions = {
+    fHe: fHe/100,
+    fO2: fO2/100
+  }
+
   return (
     <div className="flex items-stretch">
       <div className="border-r min-w-[250px]">
@@ -120,14 +127,20 @@ function GasMixCalculator() {
               />
             </div>
           </div>
+          <div className="grid w-full max-w-sm items-center gap-2">
+            <Label htmlFor="mod">Maximum operating depth (MOD)</Label>
+            <Input
+              type="text"
+              id="mod"
+              value={`${Math.trunc(maximumOperatingDepth(gasFractions))}m`}
+              readOnly
+            />
+          </div>
         </div>
       </div>
       <div className="py-6 px-10 space-y-4 w-full max-w-6xl overflow-scroll">
         <GasCharacteristicsTable
-          gasFractions={{
-            fHe: fHe/100,
-            fO2: fO2/100
-          }}
+          gasFractions={gasFractions}
         />
       </div>
     </div>
