@@ -52,3 +52,39 @@ export const idealGasMixForDepth = (depth: number) => {
 
   return `${Math.round(fracHe * 100)}% He - ${Math.round(fracN2 * 100)}% N2 - ${Math.round(fracO2 * 100)}% O2 (${fracO2 >= .18 ? 'normoxic' : 'hipoxic'})`
 }
+
+interface GasMix {
+  percent: number
+  fraction: {
+    He: number
+    N2: number
+    O2: number
+  }
+}
+
+export const calculateMix = (gasA: GasMix, gasB: GasMix): GasMix => ({
+  percent: gasA.percent + gasB.percent,
+  fraction: {
+    He: Math.round((gasA.fraction.He*gasA.percent + gasB.fraction.He*gasB.percent) / (gasA.percent + gasB.percent) * 100),
+    N2: Math.round((gasA.fraction.N2*gasA.percent + gasB.fraction.N2*gasB.percent) / (gasA.percent + gasB.percent) * 100),
+    O2: Math.round((gasA.fraction.O2*gasA.percent + gasB.fraction.O2*gasB.percent) / (gasA.percent + gasB.percent) * 100)
+  }
+})
+
+const mixes: GasMix[] = [.35, .45, .55, .65].map(percent =>
+  calculateMix(
+    {
+      percent,
+      fraction: {He: 1, O2: 0, N2: 0}
+    },
+    {
+      percent: 1 - percent,
+      fraction: {He: 0, O2: 0.32, N2: 1 - 0.32}
+    }
+  )
+)
+
+mixes.forEach(mix => {
+  console.table(mix.fraction)
+  console.log('MOD:', maximumOperatingDepth({ fO2: mix.fraction.O2/100 }))
+})

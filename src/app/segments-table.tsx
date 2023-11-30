@@ -1,4 +1,11 @@
 import * as React from "react";
+import { pipe, partial } from "ramda"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 import {
   Table,
@@ -9,12 +16,32 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-function segmentFormula ({ depth, sacRate, cylinderVolume }: { depth: number, sacRate: number, cylinderVolume: number }) {
-  const Pamb = depth/10 + 1
-  const CatDepth = sacRate/cylinderVolume*Pamb*5
-
-  return Math.round((CatDepth + Number.EPSILON) * 10) / 10
+function roundToPrecision(precision: number, num: number) {
+  const factor = Math.pow(10, precision);
+  return Math.round(num * factor) / factor;
 }
+
+function roundToHalf(num: number) {
+  return Math.ceil(num * 2) / 2;
+}
+
+function calculateGasConsumptionSegment ({ depth, sacRate, cylinderVolume }: { depth: number, sacRate: number, cylinderVolume: number }) {
+  const segmentMinutes = 5
+  const Pamb = depth/10 + 1
+
+  return sacRate / cylinderVolume * Pamb * segmentMinutes
+}
+
+const calculateRoundedSegments = pipe(
+  calculateGasConsumptionSegment,
+  partial(roundToPrecision, [2])
+)
+
+
+const calculateHumanizedRoundedSegments = pipe(
+  calculateGasConsumptionSegment,
+  roundToHalf
+)
 
 interface SegmentsTable {
   sacRate: number
@@ -36,12 +63,32 @@ export function SegmentsTable({ cylinders, sacRate }: SegmentsTable) {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {[10, 20, 30, 40, 50, 60, 70].map(depth => (
+        {[0, 10, 20, 30, 40, 50, 60, 70].map(depth => (
           <TableRow key={depth}>
             <TableCell>{depth}m</TableCell>
             {cylinders.map(({volume}) => (
               <TableCell key={volume} >
-                {segmentFormula({depth, sacRate, cylinderVolume: volume})}bar
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      {calculateHumanizedRoundedSegments({
+                        depth: 0,
+                        sacRate,
+                        cylinderVolume: volume
+                      }) * ((depth/10) + 1)}bar
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      Exact value:
+                      <span className="font-bold">
+                        {calculateRoundedSegments({
+                          depth,
+                          sacRate,
+                          cylinderVolume: volume
+                        })}bar
+                      </span>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               </TableCell>
             ))}
           </TableRow>
