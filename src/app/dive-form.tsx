@@ -46,7 +46,7 @@ export function DiveForm({ onSacRateChange }: {onSacRateChange: (sac_rate: numbe
           name="sac_rate"
           render={({field}) => (
             <FormItem>
-              <FormLabel>S.A.C. Rate</FormLabel>
+              <FormLabel>S.A.C. rate</FormLabel>
               <FormControl>
                 <Input type='number' {...field} />
               </FormControl>

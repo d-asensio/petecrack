@@ -60,7 +60,7 @@ function GasConsumptionCalculator() {
         </div>
       </div>
       <div className="py-6 px-10 space-y-4 w-full max-w-6xl overflow-scroll">
-        <h2 className="text-3xl font-bold">Min Gas</h2>
+        <h2 className="text-3xl font-bold">Minimum gas</h2>
         <MinGasTable
           cylinders={cylinders}
           sacRate={sacRate}
