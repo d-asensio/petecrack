@@ -27,6 +27,20 @@ function petecrackFormula ({ depth0, depth1 = 0, sacRate }: { depth0: number, de
   return Pavg * tts * sacRate * 2
 }
 
+function roundToNearestFive(n: number) {
+  return Math.round(n / 5) * 5;
+}
+
+function minGas({ depth0, depth1 = 0, sacRate, volume }: { depth0: number, depth1?: number, sacRate: number, volume: number }) {
+  const liters = petecrackFormula({
+    depth0,
+    depth1,
+    sacRate
+  })
+
+  return roundToNearestFive(liters / volume)
+}
+
 interface MinGasTableProps {
   sacRate: number
   cylinders: {
@@ -71,11 +85,12 @@ export function MinGasTable({ cylinders, sacRate }: MinGasTableProps) {
               <TableCell>{depth}m</TableCell>
               {cylinders.map(({volume}) => (
                 <TableCell key={volume} >
-                  {Math.ceil(petecrackFormula({
+                  {minGas({
                     depth0: depth,
                     depth1: nextGasSourceDepth,
-                    sacRate
-                  }) / volume)}bar
+                    sacRate,
+                    volume
+                  })}bar
                 </TableCell>
               ))}
             </TableRow>
